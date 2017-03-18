@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Apprenons les chiffres !</title>
+        <meta charset="utf-8">
+        <meta lang = "fr">
+		<meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Dancing+Script:700|Roboto+Mono" rel="stylesheet">
+        <link rel="stylesheet" href="css/flag-icon.css">        
+        <link rel = "stylesheet" href = "css/style.css">
+    </head>
+    <body>
+        <header>
+            <div id="flags">
+                <a href="https://fervero.github.io/" id = "home"><span class="fa fa-home"></span></a>
+                <a href="#fr"><span class="flag-icon flag-icon-fr" alt = "FR"></span></a>
+                <a href="#es"><span class="flag-icon flag-icon-es" alt = "ES"></span></a>
+                <a href="#pl"><span class="flag-icon flag-icon-pl" alt = "PL"></span></a>
+                <a href="#en"><span class="flag-icon flag-icon-us" alt = "EN"></span></a>
+            </div>
+            <h1 id = "page-header">Apprenons les chiffres français&nbsp;!</h1>
+            <h2 id = "wait-header">En train de chercher une voix française...</h2>
+        </header>
+        <main>
+            <div id="buttons-here">
+                <button id="button-short" disabled = "disabled" aria-label = "short number">123</button>
+                <button id="button-date" disabled = "disabled" aria-label = "date"><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                <button id="button-phone" disabled = "disabled" aria-label = "phone number"><i class="fa fa-phone" aria-hidden="true"></i></button>
+            </div>
+            <form id = "answers-here">
+                <input type = "tel" id = "answer" name = "answer" placeholder = "###">
+                <button id="button-repeat" aria-label = "repeat" type = "button"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+                <button id="button-submit" aria-label = "verify" type="submit"><i class="fa fa-check" aria-hidden="true"></i></button>
+            </form>
+        </main>
+        <footer>
+            <h1>Désolé, votre navigateur, paraît-il, ne soutient pas la synthèse vocale.</h1>
+            <h1>Sorry, your browser seems not to support text-to-speech.</h1>
+        </footer>        
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+    <script src = "js/script.js"></script>
+</html>
