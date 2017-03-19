@@ -33,10 +33,10 @@ numeros.config(function($routeProvider, $locationProvider) {
 
 numeros.service('randomService', function() {
     this.short = function() {
-        return Math.round(1000 * Math.random()).toString();
+        return Math.floor(1 + 999 * Math.random()).toString();
     };
     this.phone = function() {
-        return Math.round(100000000 + 899999999 * Math.random()).toString();
+        return Math.floor(100000000 + 899999999 * Math.random()).toString();
     };
     this.date = function() {
         var start = new Date(1979, 0, 1),
@@ -44,9 +44,13 @@ numeros.service('randomService', function() {
         day = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
         return '' + day.getDate() + '-' + (day.getMonth() + 1) + '-' + day.getFullYear();
     };
+    this.fromArray = function(arr) {
+        var i = Math.floor(arr.length * Math.random());
+        return arr[i];
+    }
 });
 
-numeros.service('speakerService', function() {
+numeros.service('speakerService', ['randomService', function(random) {
     this.initService = function() {
         if (!('speechSynthesis' in window))
             return false;
@@ -72,18 +76,26 @@ numeros.service('speakerService', function() {
             return (elem.lang) && (elem.lang.startsWith(lang))
         });
     }
+    this.randomVoice = function(lang) {
+        lang = lang || this.lang;
+        var compatibleVoices = this.voices.filter(function(elem) {
+            return (elem.lang) && (elem.lang.startsWith(lang));
+        });
+        return random.fromArray(compatibleVoices);
+    }
     this.utterance = function(text, cb) {
         var msg = new SpeechSynthesisUtterance(text);
         msg.lang = this.lang;
         if(cb)
             msg.onstart = cb;
+        msg.voice = this.randomVoice();
         return msg;
     }
     this.speak = function(text, cb) {
         this.speaker.cancel();
         this.speaker.speak(this.utterance(text, cb));
     }
-});
+}]);
 
 numeros.controller('outsideController', ['$scope', '$window', 'speakerService', function($scope, $window, speaker) {
     $scope.voiceless = !speaker.initService();
@@ -224,7 +236,7 @@ numeros.controller ('englishController', ['$scope', '$window', '$controller', 'r
     $scope.wait = 'Looking for an English voice...';
     $scope.successPhrase = 'Correct.',
     $scope.failurePhrase = 'Incorrect!';    
-    $scope.months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];    
+    $scope.months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     
     $scope.initSpeak();
     $window.speechSynthesis.onvoiceschanged = $scope.onvoiceschanged;
