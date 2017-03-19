@@ -13,7 +13,7 @@
     </head>
 <!--    <body ng-controller="mainController"> -->
     <body>
-        <header>
+        <header ng-controller = "outsideController">
             <div id="flags">
                 <a href="https://fervero.github.io/" id = "home"><span class="fa fa-home"></span></a>
                 <a href="#fr"><span class="flag-icon flag-icon-fr" alt = "FR"></span></a>
@@ -21,8 +21,15 @@
                 <a href="#pl"><span class="flag-icon flag-icon-pl" alt = "PL"></span></a>
                 <a href="#en"><span class="flag-icon flag-icon-us" alt = "EN"></span></a>
             </div>
-</header>    
-   <div ng-view></div>
+               <div class="in-front" ng-class="{visible: voiceless}">
+                    <h1>Désolé, votre navigateur, paraît-il, ne soutient pas la synthèse vocale.</h1>
+                    <h1>Sorry, your browser seems not to support text-to-speech.</h1>
+                    <h1>Desafortunadamente, su navegador no parece apoyar la síntesis de habla.</h1>
+                    <h1>Niestety, wygląda na to, że Twoja przeglądarka nie obsługuje syntezy mowy.</h1>
+                </div>
+            
+        </header>
+       <div ng-view></div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://code.angularjs.org/1.5.9/angular.min.js"></script>

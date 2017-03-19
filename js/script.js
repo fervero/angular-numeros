@@ -47,24 +47,27 @@ numeros.service('randomService', function() {
 });
 
 numeros.service('speakerService', function() {
-    this.init = function(lang) {
-        this.voices = this.voices || [];
+    this.initService = function() {
         if (!('speechSynthesis' in window))
             return false;
         if(!(this.speechInitialized)) {
             this.speechInitialized = true;
             this.speaker = window.speechSynthesis;
-            this.voices = this.speaker.getVoices();
         }
+        this.voices = this.speaker.getVoices();        
+        return true;
+    }
+    this.changeLanguage = function(lang) {
         this.speaker.cancel();
         this.lang = lang;
-        window.speechSynthesis.onvoiceschanged = this.voicesChanged;
+        this.voices = this.speaker.getVoices();
     }
     var self = this;
     this.voicesChanged = function(e) {
         self.voices = self.speaker.getVoices();
     };
     this.hasTheLanguage = function(lang) {
+        lang = lang || this.lang;
         return this.voices.some(function(elem) {
             return (elem.lang) && (elem.lang.startsWith(lang))
         });
@@ -82,28 +85,38 @@ numeros.service('speakerService', function() {
     }
 });
 
+numeros.controller('outsideController', ['$scope', '$window', 'speakerService', function($scope, $window, speaker) {
+    $scope.voiceless = !speaker.initService();
+}]);
+
 numeros.controller('frenchController', ['$scope', '$window', 'randomService', 'speakerService', function($scope, $window, random, speaker) {
+    $scope.lang = 'fr';
+    $scope.initSpeak = function() {
+        speaker.changeLanguage($scope.lang);
+        if (!($scope.hasTheLanguage)) {
+            $scope.hasTheLanguage = [];
+        }
+        $scope.hasTheLanguage[$scope.lang] = $scope.hasTheLanguage[$scope.lang] || speaker.hasTheLanguage();
+    };
+
     $scope.prompt = 'Apprenons les chiffres français&#8239;!';
     $scope.wait = 'En train de chercher une voix française...';
     $scope.successPhrase = "C'est correct.",
     $scope.failurePhrase = "C'est incorrect!";    
     $scope.months = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
     $scope.placeholder = $scope.answer = $scope.correctAnswer = '';
-    $scope.lang = 'fr';
-    $scope.hasTheLanguage = false;
-    if (speaker.init($scope.lang) === false) {
-        $scope.voiceless = true;
-        return;
-    };
-    $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-    $window.speechSynthesis.onvoiceschanged = function() {
+    $scope.initSpeak();
+    $scope.onvoiceschanged = function() {
         $scope.$apply(function() {
-// Looks a little 'quick and dirty', not very Angular, but it does the job.            
+// Looks a little 'quick and dirty', not very Angular, but it does the job.
             speaker.voicesChanged();
-            $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-        })
-    };
+            $scope.hasTheLanguage[$scope.lang] = $scope.hasTheLanguage[$scope.lang] || speaker.hasTheLanguage($scope.lang);
+        });
+    }
     
+    $window.speechSynthesis.onvoiceschanged = $scope.onvoiceschanged;
+    
+    $scope.hasTheLanguage [$scope.lang] = $scope.hasTheLanguage [$scope.lang] || speaker.hasTheLanguage($scope.lang);           
     $scope.updateAnswer = function(answer, placeholder) {
         $scope.answer='';
         $scope.placeholder = placeholder;
@@ -169,22 +182,13 @@ numeros.controller('frenchController', ['$scope', '$window', 'randomService', 's
 numeros.controller ('spanishController', ['$scope', '$window', '$controller', 'randomService', 'speakerService', function($scope, $window, $controller, random, speaker) {
     $controller('frenchController', {$scope: $scope});
     $scope.lang = 'es';
-    if (speaker.init($scope.lang) === false) {
-        $scope.voiceless = true;
-        return;
-    };    
     $scope.prompt = '¡Aprendamos los números en español!';
     $scope.wait = 'Buscando una voz española...';
     $scope.successPhrase = 'Es correcte.',
     $scope.failurePhrase = 'Es incorrecte!';    
-    $scope.months = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];    
-    $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-    $window.speechSynthesis.onvoiceschanged = function() {
-        $scope.$apply(function() {
-            speaker.voicesChanged();
-            $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-        })
-    };
+    $scope.months = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];   
+    $scope.initSpeak();
+    $window.speechSynthesis.onvoiceschanged = $scope.onvoiceschanged;
     $scope.formatPhone = function(phone) {
         var stringified = phone.toString().match(/.{1,3}/g).join('-') 
         return {
@@ -202,17 +206,8 @@ numeros.controller ('polishController', ['$scope', '$window', '$controller', 'ra
     $scope.successPhrase = 'Poprawnie.',
     $scope.failurePhrase = 'Niepoprawnie.';    
     $scope.months = ['', 'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia '];    
-    if (speaker.init($scope.lang) === false) {
-        $scope.voiceless = true;
-        return;
-    };
-    $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-    $window.speechSynthesis.onvoiceschanged = function() {
-        $scope.$apply(function() {
-            speaker.voicesChanged();
-            $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-        })
-    };
+    $scope.initSpeak();
+    $window.speechSynthesis.onvoiceschanged = $scope.onvoiceschanged;
     $scope.formatPhone = function(phone) {
         var stringified = phone.toString().match(/.{1,3}/g).join('-') 
         return {
@@ -224,23 +219,15 @@ numeros.controller ('polishController', ['$scope', '$window', '$controller', 'ra
 
 numeros.controller ('englishController', ['$scope', '$window', '$controller', 'randomService', 'speakerService', function($scope, $window, $controller, random, speaker) {
     $controller('polishController', {$scope: $scope});
-    $scope.lang = 'fq';
+    $scope.lang = 'en';
     $scope.prompt = "Let's learn English numbers.";
     $scope.wait = 'Looking for an English voice...';
     $scope.successPhrase = 'Correct.',
     $scope.failurePhrase = 'Incorrect!';    
     $scope.months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];    
-    if (speaker.init($scope.lang) === false) {
-        $scope.voiceless = true;
-        return;
-    };
-    $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-    $window.speechSynthesis.onvoiceschanged = function() {
-        $scope.$apply(function() {
-            speaker.voicesChanged();
-            $scope.hasTheLanguage = $scope.hasTheLanguage || speaker.hasTheLanguage($scope.lang);
-        })
-    };
+    
+    $scope.initSpeak();
+    $window.speechSynthesis.onvoiceschanged = $scope.onvoiceschanged;
 // As usual, the month-day-year format requires a little bit extra attention.    
     $scope.formatDate = function(date) {
         var splitDate = date.split(/\D/);

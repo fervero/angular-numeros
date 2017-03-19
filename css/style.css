@@ -42,10 +42,15 @@ button {
     width: 100vw;
     height: 100vh;
     background: darkblue;
+    display: none;
+}
+
+.visible {
+    display: block;
 }
 
 #verdict {
-    opacity: 0;
+    visibility: hidden;
 }
 
 h1, h2 {
