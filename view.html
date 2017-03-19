@@ -1,0 +1,23 @@
+
+            <h1 id = "page-header" ng-bind-html="prompt"></h1>
+            <h2 id = "wait-header" ng-hide="hasTheLanguage" ng-bind-html="wait"></h2>
+        <main>
+            <div id="buttons-here">
+                <button id="button-short" aria-label = "short number" ng-click="tryShort()" ng-disabled="!hasTheLanguage">123</button>
+                <button id="button-date" aria-label = "date" ng-click="tryDate()" ng-disabled="!hasTheLanguage"><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                <button id="button-phone" aria-label = "phone number" ng-click="tryPhone()" ng-disabled="!hasTheLanguage"><i class="fa fa-phone" aria-hidden="true"></i></button>
+            </div>
+            <form id = "answers-here" ng-submit="confirm()" ng-show="correctAnswer.length>0">
+                <input type = "tel" id = "answer" name = "answer" ng-attr-placeholder = "{{ placeholder }}" ng-model="answer">
+                <button id="button-repeat" aria-label = "repeat" type = "button" ng-click="repeat()"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+                <button id="button-submit" aria-label = "verify" type="submit"><i class="fa fa-check" aria-hidden="true"></i></button>
+            </form>
+            <span ng-if="!verify(answer, correctAnswer)" id="verdict">{{ failurePhrase }}</span>
+            <span ng-if="verify(answer, correctAnswer)" id="verdict">{{ successPhrase }}</span>
+        </main>
+        <div class="in-front" ng-if="voiceless">
+            <h1>Désolé, votre navigateur, paraît-il, ne soutient pas la synthèse vocale.</h1>
+            <h1>Sorry, your browser seems not to support text-to-speech.</h1>
+            <h1>Desafortunadamente, su navegador no parece apoyar la síntesis de habla.</h1>
+            <h1>Niestety, wygląda na to, że Twoja przeglądarka nie obsługuje syntezy mowy.</h1>
+        </div>

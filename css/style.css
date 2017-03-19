@@ -33,8 +33,7 @@ button {
     flex: 1;
 }
 
-footer {
-    display: none;
+.in-front {
     position: fixed;
     z-index: 10;
     left: 0;
@@ -43,6 +42,10 @@ footer {
     width: 100vw;
     height: 100vh;
     background: darkblue;
+}
+
+#verdict {
+    opacity: 0;
 }
 
 h1, h2 {
@@ -60,6 +63,7 @@ h1 {
 
 h2 {
     margin-bottom: 1.8em;
+    font-size: 3.5vw;
 }
 
 #page-header {
@@ -72,7 +76,8 @@ h2 {
 }
 
 #answers-here {
-    display: none;
+//    display: none;
+    display: flex;
     flex-flow: row wrap;
 }
 
@@ -111,6 +116,9 @@ h2 {
     h1 {
         font-size: 49px;
     }
+    h2 {
+        font-size: 36px;
+    }
     
     #flags > a {
         font-size: 68px;
@@ -129,6 +137,9 @@ h2 {
 
     h1 {
         font-size: 7vw;
+    }
+    h2 {
+        font-size: 5vw;
     }
 }
 
